@@ -1,0 +1,27 @@
+from sklearn import datasets
+from sklearn.model_selection import cross_val_predict
+from sklearn import linear_model
+import matplotlib.pyplot as plt
+import numpy as np
+import xlrd
+from sklearn.linear_model import LinearRegression
+
+lr = linear_model.LinearRegression()
+# plot date against average monthly price of crude oil
+# every month from January 2000 to February 2018
+file_location = "C:/Users/Mengy/Desktop/crude oil data.xlsx"
+workbook = xlrd.open_workbook(file_location)
+sheet = workbook.sheet_by_index(0)
+data = [[sheet.cell_value(r, c) for c in range(sheet.ncols)] for r in range(sheet.nrows)]
+date = [item[0] for item in data]
+prices = [item[1] for item in data]
+date.remove('Date')
+prices.remove('Price')
+npMatrix = np.matrix(data)
+x, y = npMatrix[1:, 0], npMatrix[1:, 1]
+lr = LinearRegression().fit(x, y)
+m = lr.coef_[0]
+b = lr.intercept_
+plt.scatter(date, prices, color = 'blue')
+plt.plot([0, 218], [b, m*218+b], 'r')
+plt.show()
